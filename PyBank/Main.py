@@ -1,51 +1,47 @@
-import os, csv
+import os
+import csv
+# path for the file
+pybank = "budget_data.csv"
+totalmonths=[]
+total= []
+average_change=[]
 
+# Reading using csv module
+with open(pybank, newline="", encoding="utf-8")as csvfile:
+   csvreader = csv.reader(csvfile, delimiter=",")
+   csvwriter = csv.writer(csvfile,delimiter=',')
+   csv_header = next(csvfile)
+   #print(f"Header: {csv_header}")
+   for row in csvreader:
+       totalmonths.append(row[0])
+       #total+=int(row[1])
+       total.append(int(row[1]))
+#average of changes
+   for i in range(len(total)-1):
+       average_change.append(total[i+1]-total[i])
 
-# Declare file location through pathlib
-input_file = "budget_data.csv"
+# Greatest increase  and decrease in profit
+Greatest_profit=max(average_change)
+Greatest_loss=min(average_change)
 
-# Create empty lists to iterate through specific rows for the following variables
-total_months = []
-total_profit = []
-monthly_profit_change = []
- 
-# Open csv in default read mode with context manager
-with open(input_file,newline="", encoding="utf-8") as budget:
-
-     # Store the contents of budget_data.csv in the variable csvreader
-    csvreader = csv.reader(budget,delimiter=",") 
-
-    # Skip the header labels to iterate with the values
-    header = next(csvreader)  
-
-    # Iterate through the rows in the stored file contents
-    for row in csvreader: 
-
-        # Append the total months and total profit to their corresponding lists
-        total_months.append(row[0])
-        total_profit.append(int(row[1]))
-
-    # Iterate through the profits in order to get the monthly change in profits
-    for i in range(len(total_profit)-1):
-        
-        # Take the difference between two months and append to monthly profit change
-        monthly_profit_change.append(total_profit[i+1]-total_profit[i])
-        
-# Obtain the max and min of the the montly profit change list
-max_increase_value = max(monthly_profit_change)
-max_decrease_value = min(monthly_profit_change)
-
-# Correlate max and min to the proper month using month list and index from max and min
-#We use the plus 1 at the end since month associated with change is the + 1 month or next month
-max_increase_month = monthly_profit_change.index(max(monthly_profit_change)) + 1
-max_decrease_month = monthly_profit_change.index(min(monthly_profit_change)) + 1 
-
-# Print Statements
+#Max and min of months
+Max_month=average_change.index(max(average_change))+1
+Min_month=average_change.index(min(average_change))+1
 
 print("Financial Analysis")
-print("----------------------------")
-print(f"Total Months: {len(total_months)}")
-print(f"Total: ${sum(total_profit)}")
-print(f"Average Change: {round(sum(monthly_profit_change)/len(monthly_profit_change),2)}")
-print(f"Greatest Increase in Profits: {total_months[max_increase_month]} (${(str(max_increase_value))})")
-print(f"Greatest Decrease in Profits: {total_months[max_decrease_month]} (${(str(max_decrease_value))})")
+
+
+print("-------------------------------------------------------")
+print("Total Months: " +str(len(totalmonths)))
+print(f"Total: ${sum(total)}")
+print(f"Average Change: ${round(sum(average_change)/len(average_change),2)}")
+print(f"Greatest Increase in Profits:{totalmonths[Max_month]} (${Greatest_profit})")
+print(f"Greatest Decrease in Profits:{totalmonths[Min_month]} (${Greatest_loss})")
+file1=open("output.txt","w")
+file1.write("Financial Analysis \n -----------------------------------------------  ")
+file1.write("\n" +"Total Months: " +str(len(totalmonths))+ "\n")
+file1.write("\n" + f"Total: ${sum(total)}" +"\n")
+file1.write("\n" + f"Average Change: ${round(sum(average_change)/len(average_change),2)}" + "\n" )
+file1.write("\n" + f"Greatest Increase in Profits:{totalmonths[Max_month]} (${Greatest_profit})" + "\n" )
+file1.write("\n" + f"Greatest Decrease in Profits:{totalmonths[Min_month]} (${Greatest_loss})" + "\n" )
+file1.close()
